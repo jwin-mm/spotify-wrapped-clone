@@ -1,0 +1,72 @@
+/* src/styles.css */
+:root {
+  --gold: #8b6914; /* Darker gold for visibility on yellow background */
+  --gold-light: #d4af37; /* Original gold for use on dark backgrounds */
+  --dark-grey: #1a1a1a;
+  --light-grey: #f0f0f0;
+  --white: #ffffff;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Prevent native scroll, we manage container */
+  font-family: "Helvetica Neue", sans-serif;
+  background-color: var(--dark-grey);
+}
+
+/* The Main Scroll Container */
+.scroll-container {
+  height: 100vh;
+  width: 100vw;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  position: relative !important; /* Explicit position for framer-motion */
+  z-index: 10; /* Above the canvas */
+}
+
+/* Individual Pages */
+.section {
+  height: 100vh;
+  width: 100vw;
+  scroll-snap-align: start;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Pointer events passed to children, but allow click-through to 3D */
+  pointer-events: none;
+}
+
+.section > * {
+  pointer-events: auto; /* Re-enable clicks on text/buttons */
+}
+
+/* The Background Canvas */
+.canvas-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: auto; /* Allow rotating 3D models */
+}
+
+/* Speed Control Input */
+.speed-control {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 200px;
+  z-index: 10000;
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
