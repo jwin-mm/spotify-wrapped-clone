@@ -2,6 +2,17 @@ import React from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 
+// Import animation components
+import Test from "../Animations/Test";
+import WelcomeScreen from "./WelcomeScreen";
+
+// Animation component mapping
+const animationComponents = {
+  Test: Test,
+  // Add more animation components here as they are created
+  // Example: AnotherAnimation: AnotherAnimation,
+};
+
 // Animation variants for consistency
 const fadeInUp = {
   hidden: { opacity: 0, y: 50 },
@@ -240,27 +251,65 @@ const StatCenter = ({ title, content, data }) => (
   </motion.div>
 );
 
+const Welcome = ({ data }) => <WelcomeScreen />;
+
+// Animation Renderer Component
+const AnimationRenderer = ({ animations, isActive }) => {
+  // Only render animations when the page is active
+  if (!isActive) {
+    return null;
+  }
+
+  if (!animations || !Array.isArray(animations) || animations.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      {animations.map((animationName, index) => {
+        const AnimationComponent = animationComponents[animationName];
+        if (!AnimationComponent) {
+          console.warn(`Animation component "${animationName}" not found`);
+          return null;
+        }
+        return <AnimationComponent key={`animation-${index}`} />;
+      })}
+    </>
+  );
+};
+
 // Main Component that selects the layout
-const TemplateRenderer = ({ config, data }) => {
+const TemplateRenderer = ({ config, data, isActive }) => {
   // Check if this is the outro page (Final Thoughts)
   const isOutro = config.title === "Final Thoughts";
 
-  switch (config.type) {
-    case "intro":
-      return <Intro {...config} data={data} />;
-    case "split-right":
-      return isOutro ? (
-        <Outro {...config} data={data} />
-      ) : (
-        <SplitRight {...config} data={data} />
-      );
-    case "split-left":
-      return <SplitLeft {...config} data={data} />;
-    case "stat-center":
-      return <StatCenter {...config} data={data} />;
-    default:
-      return <StatCenter {...config} data={data} />;
-  }
+  const renderLayout = () => {
+    switch (config.type) {
+      case "welcome":
+        return <Welcome {...config} data={data} />;
+      case "intro":
+        return <Intro {...config} data={data} />;
+      case "split-right":
+        return isOutro ? (
+          <Outro {...config} data={data} />
+        ) : (
+          <SplitRight {...config} data={data} />
+        );
+      case "split-left":
+        return <SplitLeft {...config} data={data} />;
+      case "stat-center":
+        return <StatCenter {...config} data={data} />;
+      default:
+        return <StatCenter {...config} data={data} />;
+    }
+  };
+
+  return (
+    <>
+      {renderLayout()}
+      <AnimationRenderer animations={config.animations} isActive={isActive} />
+    </>
+  );
 };
 
 export default TemplateRenderer;

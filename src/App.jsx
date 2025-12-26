@@ -1,65 +1,81 @@
 import React, { useState, useRef } from "react";
+import {
+  motion, // eslint-disable-line no-unused-vars
+  useScroll,
+  useTransform,
+  useMotionValueEvent,
+} from "framer-motion";
 import { userData, pagesConfig } from "./config";
 import ProgressBar from "./components/DOM/ProgressBar";
 import TemplateRenderer from "./components/DOM/Templates";
-import WelcomeScreen from "./components/DOM/WelcomeScreen";
 import "./styles.css";
 import BackgroundModels from "./components/3D/BackgroundModels";
+import Test from "./components/Animations/Test.jsx";
+import Scroll from "./components/Animations/Scroll.jsx";
 
 export default function App() {
-  const [activePage, setActivePage] = useState(0);
-  const [showWelcome, setShowWelcome] = useState(true);
   const [speed, setSpeed] = useState(1);
-  const containerRef = useRef();
+  const [currentPage, setCurrentPage] = useState(0);
+  const containerRef = useRef(null);
 
-  const handleScroll = () => {
-    if (!containerRef.current) return;
-    const scrollPos = containerRef.current.scrollTop;
-    const height = window.innerHeight;
-    const index = Math.round(scrollPos / height);
-    if (index !== activePage) setActivePage(index);
-  };
+  // Use container instead of target to track scroll progress WITHIN the container
+  const { scrollYProgress } = useScroll({
+    container: containerRef,
+    layoutEffect: false,
+  });
+
+  // Transform scroll progress to active page index
+  // Map scroll progress (0-1) to page indices (0 to pagesConfig.length-1)
+  const activePage = useTransform(scrollYProgress, (latest) => {
+    const index = Math.round(latest * (pagesConfig.length - 1));
+    return Math.min(Math.max(index, 0), pagesConfig.length - 1);
+  });
+
+  // Subscribe to activePage changes and update state
+  useMotionValueEvent(activePage, "change", (latest) => {
+    setCurrentPage(latest);
+  });
 
   return (
     <>
-      {showWelcome ? (
-        <WelcomeScreen onDismiss={() => setShowWelcome(false)} />
-      ) : (
-        <>
-          <ProgressBar total={pagesConfig.length} current={activePage} />
+      <ProgressBar total={pagesConfig.length} current={currentPage} />
 
-          <main
-            ref={containerRef}
-            className="scroll-container"
-            onScroll={handleScroll}
-            style={{ position: "relative" }}
-          >
-            {pagesConfig.map((page, index) => (
-              <section key={page.id} className="section">
-                <div className="container mx-auto px-6 relative z-10">
-                  <TemplateRenderer
-                    config={page}
-                    data={userData}
-                    isActive={index === activePage}
-                  />
-                </div>
-              </section>
-            ))}
-          </main>
+      <main
+        ref={containerRef}
+        className="scroll-container"
+        style={{ position: "relative" }}
+      >
+        {pagesConfig.map((page, index) => (
+          <motion.section key={page.id} className="section">
+            <div className="container mx-auto px-6 relative z-10">
+              <TemplateRenderer
+                config={page}
+                data={userData}
+                isActive={index === currentPage}
+              />
+            </div>
+          </motion.section>
+        ))}
+      </main>
 
-          <BackgroundModels speed={speed} />
+      {/* Visual separator layer with transparent effect */}
+      <div className="separator-layer"></div>
 
-          <input
-            className="speed-control"
-            type="range"
-            min="0"
-            max="50"
-            value={speed}
-            step="0.1"
-            onChange={(e) => setSpeed(e.target.value)}
-          />
-        </>
-      )}
+      {/* <Test /> */}
+
+      {/* <BackgroundModels speed={speed} /> */}
+      {/* <Scroll scrollYProgress={scrollYProgress} /> */}
+
+      <input
+        key="speed-control"
+        className="speed-control"
+        type="range"
+        min="0"
+        max="25"
+        value={speed}
+        step="0.1"
+        onChange={(e) => setSpeed(e.target.value)}
+      />
     </>
   );
 }

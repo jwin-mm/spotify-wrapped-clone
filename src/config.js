@@ -62,6 +62,11 @@ export const userData = {
 export const pagesConfig = [
   {
     id: 0,
+    type: "welcome",
+    title: "Welcome",
+  },
+  {
+    id: 1,
     type: "intro",
     title: "What a year, NAME!",
     content: [
@@ -74,7 +79,7 @@ export const pagesConfig = [
     ],
   },
   {
-    id: 1,
+    id: 2,
     type: "stat-center",
     title: "Project Hours",
     content: [
@@ -89,7 +94,7 @@ export const pagesConfig = [
     ],
   },
   {
-    id: 2,
+    id: 3,
     type: "split-right",
     title: "Top 5 Projects",
     content: [
@@ -107,7 +112,7 @@ export const pagesConfig = [
     ],
   },
   {
-    id: 3,
+    id: 4,
     type: "split-right",
     title: "Top 5 Clients",
     content: [
@@ -126,7 +131,7 @@ export const pagesConfig = [
     ],
   },
   {
-    id: 4,
+    id: 5,
     type: "split-left",
     title: "Top 5 PMs",
     content: [
@@ -145,7 +150,7 @@ export const pagesConfig = [
     ],
   },
   {
-    id: 5,
+    id: 6,
     type: "stat-center",
     title: "Teams Data",
     content: [
@@ -186,7 +191,7 @@ export const pagesConfig = [
     ],
   },
   {
-    id: 6,
+    id: 7,
     type: "stat-center",
     title: "Reach of Work",
     content: [
@@ -211,7 +216,7 @@ export const pagesConfig = [
     ],
   },
   {
-    id: 7,
+    id: 8,
     type: "split-right",
     title: "Final Thoughts",
     content: [

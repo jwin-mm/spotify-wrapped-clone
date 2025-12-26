@@ -1,21 +1,14 @@
 /* Welcome Screen Container */
 .welcome-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
   overflow: hidden;
   background-color: var(--kittelson-yellow);
   display: flex;
   align-items: center;
   justify-content: center;
   animation: fadeIn 1s ease-in;
-}
-
-.welcome-screen.fade-out {
-  animation: fadeOut 0.8s ease-out forwards;
 }
 
 @keyframes fadeIn {
