@@ -11,8 +11,8 @@ import {
 const MODELS = [
   { path: "/road-cone.glb", scale: 0.5, weight: 2 },
   { path: "/car.glb", scale: 0.8, weight: 1 },
-  { path: "/bike.glb", scale: 0.4, weight: 1.5 },
   { path: "/van.glb", scale: 0.7, weight: 1 },
+  { path: "/traffic-light.glb", scale: 0.9, weight: 1 },
 ];
 const MODELS_COUNT = 100;
 const LIGHT_COLOR = "orange";
