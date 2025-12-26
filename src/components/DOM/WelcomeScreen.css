@@ -7,7 +7,7 @@
   height: 100vh;
   z-index: 9999;
   overflow: hidden;
-  background-color: var(--dark-grey);
+  background-color: var(--kittelson-yellow);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,14 +49,14 @@
 }
 
 .bg-gradient-1 {
-  background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--pms-142) 0%, transparent 70%);
   top: -50%;
   left: -50%;
   animation: rotate 20s linear infinite, pulse 8s ease-in-out infinite;
 }
 
 .bg-gradient-2 {
-  background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--pms-142) 0%, transparent 70%);
   bottom: -50%;
   right: -50%;
   animation: rotate 25s linear infinite reverse, pulse 10s ease-in-out infinite;
@@ -64,7 +64,7 @@
 }
 
 .bg-gradient-3 {
-  background: radial-gradient(circle, var(--light-grey) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--cool-gray-5) 0%, transparent 70%);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -105,7 +105,7 @@
   position: absolute;
   width: 4px;
   height: 4px;
-  background-color: var(--gold);
+  background-color: var(--pms-142);
   border-radius: 50%;
   opacity: 0;
   animation: float linear infinite, twinkle ease-in-out infinite;
@@ -145,14 +145,15 @@
   position: relative;
   z-index: 10;
   text-align: center;
-  color: var(--white);
+  color: var(--black);
   max-width: 90%;
 }
 
 /* Welcome Title */
 .welcome-title {
   font-size: clamp(2rem, 8vw, 5rem);
-  font-weight: 700;
+  font-weight: 800;
+  font-family: "Gotham", "Segoe UI", sans-serif;
   margin: 0;
   padding: 0;
   line-height: 1.2;
@@ -184,12 +185,13 @@
 }
 
 .title-line.highlight {
-  background: linear-gradient(135deg, var(--gold) 0%, var(--light-grey) 100%);
+  background: linear-gradient(135deg, var(--black) 0%, var(--cool-gray-9) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: slideUp 0.8s ease-out forwards, shimmer 3s ease-in-out infinite;
   animation-delay: 0.5s, 2s;
+  font-weight: 900;
 }
 
 .title-line.year {
@@ -197,9 +199,9 @@
   font-weight: 900;
   background: linear-gradient(
     135deg,
-    var(--gold) 0%,
-    var(--white) 50%,
-    var(--gold) 100%
+    var(--black) 0%,
+    var(--pms-142) 50%,
+    var(--black) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -234,13 +236,14 @@
 .welcome-subtitle {
   font-size: clamp(0.9rem, 2vw, 1.2rem);
   font-weight: 300;
+  font-family: "Gotham", "Segoe UI", sans-serif;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   margin-top: 3rem;
   opacity: 0;
   animation: fadeIn 1s ease-out forwards, blink 2s ease-in-out infinite;
   animation-delay: 2s, 3s;
-  color: var(--light-grey);
+  color: var(--cool-gray-9);
 }
 
 @keyframes blink {
@@ -269,7 +272,7 @@
 .mouse {
   width: 28px;
   height: 45px;
-  border: 2px solid var(--gold);
+  border: 2px solid var(--black);
   border-radius: 15px;
   position: relative;
   display: flex;
@@ -280,7 +283,7 @@
 .wheel {
   width: 4px;
   height: 8px;
-  background-color: var(--gold);
+  background-color: var(--black);
   border-radius: 2px;
   animation: scroll 2s ease-in-out infinite;
 }
@@ -303,7 +306,7 @@
   height: 0;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-  border-top: 10px solid var(--gold);
+  border-top: 10px solid var(--black);
   animation: bounce 2s ease-in-out infinite;
 }
 

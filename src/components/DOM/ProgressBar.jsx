@@ -7,8 +7,12 @@ export default function ProgressBar({ total, current }) {
 
   return (
     <div
-      className="fixed top-0 left-0 w-full bg-gray-800"
-      style={{ zIndex: 9999, height: "4px" }}
+      className="fixed top-0 left-0 w-full"
+      style={{
+        zIndex: 9999,
+        height: "4px",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+      }}
       role="progressbar"
       aria-valuenow={progress}
       aria-valuemin="0"
@@ -16,7 +20,7 @@ export default function ProgressBar({ total, current }) {
     >
       <motion.div
         className="h-full"
-        style={{ backgroundColor: "var(--gold)" }}
+        style={{ backgroundColor: "var(--kittelson-yellow)" }}
         initial={{ width: 0 }}
         animate={{ width: `${progress}%` }}
         transition={{ type: "spring", stiffness: 50, damping: 20 }}
