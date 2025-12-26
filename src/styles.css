@@ -175,6 +175,16 @@ p {
   pointer-events: auto; /* Allow rotating 3D models */
 }
 
+/* Background Models Wrapper - Hide initially, show after WelcomeScreen */
+.background-models-wrapper {
+  opacity: 0;
+  transition: opacity 0.8s ease-in;
+}
+
+.background-models-wrapper.visible {
+  opacity: 1;
+}
+
 /* Visual Separator Layer */
 .separator-layer {
   position: fixed;

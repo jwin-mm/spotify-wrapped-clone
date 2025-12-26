@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   motion, // eslint-disable-line no-unused-vars
   useScroll,
@@ -16,7 +16,17 @@ import Scroll from "./components/Animations/Scroll.jsx";
 export default function App() {
   const [speed, setSpeed] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
+  const [showBackground, setShowBackground] = useState(false);
   const containerRef = useRef(null);
+
+  // Rendering trick to hide background models momentarily 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowBackground(true);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Use container instead of target to track scroll progress WITHIN the container
   const { scrollYProgress } = useScroll({
@@ -63,8 +73,14 @@ export default function App() {
 
       {/* <Test /> */}
 
-      {/* <BackgroundModels speed={speed} /> */}
-      {/* <Scroll scrollYProgress={scrollYProgress} /> */}
+      <div
+        className={`background-models-wrapper ${
+          showBackground ? "visible" : ""
+        }`}
+      >
+        <BackgroundModels speed={speed} />
+      </div>
+      <Scroll scrollYProgress={scrollYProgress} />
 
       <input
         key="speed-control"
