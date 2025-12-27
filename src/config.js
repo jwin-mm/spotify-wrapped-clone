@@ -77,6 +77,7 @@ export const pagesConfig = [
       Let's take a look at how you spent your year making a difference!`,
       },
     ],
+    animations: ["Flower"],
   },
   {
     id: 2,
