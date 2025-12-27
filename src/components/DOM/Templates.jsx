@@ -3,14 +3,12 @@ import React from "react";
 import { motion } from "framer-motion";
 
 // Import animation components
-import Test from "../Animations/Test";
 import WelcomeScreen from "./WelcomeScreen";
+import Flower from "../Animations/Flower";
 
 // Animation component mapping
 const animationComponents = {
-  Test: Test,
-  // Add more animation components here as they are created
-  // Example: AnotherAnimation: AnotherAnimation,
+  Flower: Flower,
 };
 
 // Animation variants for consistency
@@ -251,15 +249,10 @@ const StatCenter = ({ title, content, data }) => (
   </motion.div>
 );
 
-const Welcome = ({ data }) => <WelcomeScreen />;
+const Welcome = () => <WelcomeScreen />;
 
 // Animation Renderer Component
 const AnimationRenderer = ({ animations, isActive }) => {
-  // Only render animations when the page is active
-  if (!isActive) {
-    return null;
-  }
-
   if (!animations || !Array.isArray(animations) || animations.length === 0) {
     return null;
   }
@@ -272,7 +265,9 @@ const AnimationRenderer = ({ animations, isActive }) => {
           console.warn(`Animation component "${animationName}" not found`);
           return null;
         }
-        return <AnimationComponent key={`animation-${index}`} />;
+        return (
+          <AnimationComponent key={`animation-${index}`} isActive={isActive} />
+        );
       })}
     </>
   );
