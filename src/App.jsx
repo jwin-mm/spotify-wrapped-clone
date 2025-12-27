@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   motion, // eslint-disable-line no-unused-vars
   useScroll,
@@ -10,45 +10,98 @@ import ProgressBar from "./components/DOM/ProgressBar";
 import TemplateRenderer from "./components/DOM/Templates";
 import "./styles.css";
 import BackgroundModels from "./components/3D/BackgroundModels";
-import Test from "./components/Animations/Test.jsx";
-import Scroll from "./components/Animations/Scroll.jsx";
+import Scroll from "./components/Animations/ScrollSquiggle.jsx";
+
+// Constants
+const BACKGROUND_DELAY_MS = 1500;
+const SCROLL_END_DELAY_MS = 150;
+const TOTAL_PAGES = pagesConfig.length;
 
 export default function App() {
   const [speed, setSpeed] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
   const [showBackground, setShowBackground] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
   const containerRef = useRef(null);
+  const scrollTimerRef = useRef(null);
 
-  // Rendering trick to hide background models momentarily 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowBackground(true);
-    }, 1500);
+  // ------------------------ Handle Animation play/stop from Scroll ------------------------
+  // ------------------------- START -------------------------------
 
-    return () => clearTimeout(timer);
+  // Clear scroll timer helper
+  const clearScrollTimer = useCallback(() => {
+    if (scrollTimerRef.current) {
+      clearTimeout(scrollTimerRef.current);
+      scrollTimerRef.current = null;
+    }
   }, []);
 
-  // Use container instead of target to track scroll progress WITHIN the container
+  // Mark scrolling as stopped after delay
+  const markScrollingStopped = useCallback(() => {
+    clearScrollTimer();
+    scrollTimerRef.current = setTimeout(() => {
+      setIsScrolling(false);
+      scrollTimerRef.current = null;
+    }, SCROLL_END_DELAY_MS);
+  }, [clearScrollTimer]);
+
+  // Handle scroll events
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      setIsScrolling(true);
+      markScrollingStopped();
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+
+    // Use scrollend event if supported for better performance
+    if ("onscrollend" in container) {
+      container.addEventListener("scrollend", markScrollingStopped, {
+        passive: true,
+      });
+    }
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+      if ("onscrollend" in container) {
+        container.removeEventListener("scrollend", markScrollingStopped);
+      }
+      clearScrollTimer();
+    };
+  }, [markScrollingStopped, clearScrollTimer]);
+
+  // ------------------------ END ------------------------
+
+  // Track scroll progress within the container
   const { scrollYProgress } = useScroll({
     container: containerRef,
     layoutEffect: false,
   });
 
   // Transform scroll progress to active page index
-  // Map scroll progress (0-1) to page indices (0 to pagesConfig.length-1)
   const activePage = useTransform(scrollYProgress, (latest) => {
-    const index = Math.round(latest * (pagesConfig.length - 1));
-    return Math.min(Math.max(index, 0), pagesConfig.length - 1);
+    const index = Math.round(latest * (TOTAL_PAGES - 1));
+    return Math.max(0, Math.min(index, TOTAL_PAGES - 1));
   });
 
-  // Subscribe to activePage changes and update state
-  useMotionValueEvent(activePage, "change", (latest) => {
-    setCurrentPage(latest);
-  });
+  // Update current page when active page changes
+  useMotionValueEvent(activePage, "change", setCurrentPage);
+
+  // Initialize background 3d models visibility with delay
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setShowBackground(true),
+      BACKGROUND_DELAY_MS
+    );
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
-      <ProgressBar total={pagesConfig.length} current={currentPage} />
+      <ProgressBar total={TOTAL_PAGES} current={currentPage} />
 
       <main
         ref={containerRef}
@@ -61,28 +114,31 @@ export default function App() {
               <TemplateRenderer
                 config={page}
                 data={userData}
-                isActive={index === currentPage}
+                isActive={index === currentPage && !isScrolling}
               />
             </div>
           </motion.section>
         ))}
       </main>
 
-      {/* Visual separator layer with transparent effect */}
-      <div className="separator-layer"></div>
+      {/* Layer separating foreground animations and background models */}
+      <div className="separator-layer" />
 
-      {/* <Test /> */}
-
+      {/* Background Models - 3D models floating in the background */}
       <div
         className={`background-models-wrapper ${
           showBackground ? "visible" : ""
         }`}
       >
-        <BackgroundModels speed={speed} />
+        <BackgroundModels speed={currentPage} />
       </div>
+
+      {/* Scroll Squiggle - Animated line indicating scroll progress */}
       <Scroll scrollYProgress={scrollYProgress} />
 
-      <input
+
+      {/* Uncomment this to add a speed control input */}
+      {/* <input
         key="speed-control"
         className="speed-control"
         type="range"
@@ -91,7 +147,7 @@ export default function App() {
         value={speed}
         step="0.1"
         onChange={(e) => setSpeed(e.target.value)}
-      />
+      /> */}
     </>
   );
 }
