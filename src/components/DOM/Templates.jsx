@@ -13,8 +13,16 @@ const animationComponents = {
 
 // Animation variants for consistency
 const fadeInUp = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+  hidden: { opacity: 1, y: 0 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+      duration: 0,
+      ease: "easeOut",
+      delay: 0
+    } 
+  },
 };
 
 // Helper function to format time values (seconds to hours)

@@ -71,39 +71,55 @@ html {
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden; /* Prevent native scroll, we manage container */
+  overflow: hidden;
   font-family: "Gotham", "Segoe UI", -apple-system, BlinkMacSystemFont,
     sans-serif;
   background-color: var(--background);
   color: var(--foreground);
 }
 
-/* The Main Scroll Container */
-.scroll-container {
+/* The Main Scroll Container - Ultra Smooth */
+.scroll-container-smooth {
   height: 100vh;
   width: 100%;
   overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+  overflow-x: hidden; /* Prevent horizontal scroll */
   scroll-behavior: smooth;
-  position: relative !important; /* Explicit position for framer-motion */
-  z-index: 10; /* Above the canvas */
+  position: relative !important;
+  z-index: 10;
+  /* Smooth momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  /* Remove any default padding/margin */
+  padding: 0;
+  margin: 0;
 }
 
-/* Individual Pages */
-.section {
-  height: 100vh;
+/* Individual Pages - Tall for journey feeling */
+.section-tall {
+  height: 150vh; /* Taller sections = more scroll distance */
   width: 100%;
-  scroll-snap-align: start;
+  max-width: 100vw; /* Prevent overflow */
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Pointer events passed to children, but allow click-through to 3D */
   pointer-events: none;
+  overflow: hidden; /* Contain any overflowing content */
+  /* Ensure no gaps */
+  margin: 0;
+  padding: 0;
 }
 
-.section > * {
-  pointer-events: auto; /* Re-enable clicks on text/buttons */
+/* First section should fill from top */
+.section-tall:first-child {
+  min-height: 100vh;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.section-tall > * {
+  pointer-events: auto;
+  max-width: 100%;
 }
 
 /* Typography Styles */
@@ -115,14 +131,14 @@ h5,
 h6 {
   font-family: "Gotham", "Segoe UI", sans-serif;
   color: var(--foreground);
-  font-weight: 800; /* Gotham Black */
+  font-weight: 800;
   line-height: 1.2;
   margin: 0;
 }
 
 p {
   font-family: "Gotham", "Segoe UI", sans-serif;
-  font-weight: 400; /* Gotham Book */
+  font-weight: 400;
   line-height: 1.6;
   color: var(--foreground);
 }
@@ -139,7 +155,7 @@ p {
 .intro-section h1,
 .outro-section h1 {
   font-size: 5rem;
-  font-weight: 900; /* Gotham Ultra */
+  font-weight: 900;
   letter-spacing: -0.02em;
   margin-bottom: 2rem;
   color: var(--black);
@@ -149,7 +165,7 @@ p {
 .intro-section p,
 .outro-section p {
   font-size: 1.5rem;
-  font-weight: 300; /* Gotham Light */
+  font-weight: 300;
   line-height: 1.8;
   color: var(--black);
   margin-bottom: 1.5rem;
@@ -160,7 +176,7 @@ p {
 
 .intro-section .highlight,
 .outro-section .highlight {
-  font-weight: 700; /* Gotham Bold */
+  font-weight: 700;
   color: var(--black);
 }
 
@@ -172,10 +188,10 @@ p {
   width: 100%;
   height: 100%;
   z-index: 0;
-  pointer-events: auto; /* Allow rotating 3D models */
+  pointer-events: none; /* Don't block interactions with content */
 }
 
-/* Background Models Wrapper - Hide initially, show after WelcomeScreen */
+/* Background Models Wrapper */
 .background-models-wrapper {
   opacity: 0;
   transition: opacity 0.8s ease-in;
@@ -192,14 +208,10 @@ p {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 5; /* Between canvas (0) and scroll-container (10) */
-  pointer-events: none; /* Allow interactions to pass through */
-
-  /* Semi-transparent frosted glass effect */
+  z-index: 1; /* Between canvas (0) and scroll-container (10) */
+  pointer-events: none;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(2px);
-
-  /* Optional: Add a subtle gradient for depth */
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.08) 0%,

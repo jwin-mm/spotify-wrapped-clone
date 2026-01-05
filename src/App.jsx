@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
-  motion, // eslint-disable-line no-unused-vars
+  motion,
   useScroll,
   useTransform,
   useMotionValueEvent,
@@ -10,70 +10,15 @@ import ProgressBar from "./components/DOM/ProgressBar";
 import TemplateRenderer from "./components/DOM/Templates";
 import "./styles.css";
 import BackgroundModels from "./components/3D/BackgroundModels";
-import Scroll from "./components/Animations/ScrollSquiggle.jsx";
 
 // Constants
 const BACKGROUND_DELAY_MS = 1500;
-const SCROLL_END_DELAY_MS = 150;
 const TOTAL_PAGES = pagesConfig.length;
 
 export default function App() {
-  const [speed, setSpeed] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
   const [showBackground, setShowBackground] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
   const containerRef = useRef(null);
-  const scrollTimerRef = useRef(null);
-
-  // ------------------------ Handle Animation play/stop from Scroll ------------------------
-  // ------------------------- START -------------------------------
-
-  // Clear scroll timer helper
-  const clearScrollTimer = useCallback(() => {
-    if (scrollTimerRef.current) {
-      clearTimeout(scrollTimerRef.current);
-      scrollTimerRef.current = null;
-    }
-  }, []);
-
-  // Mark scrolling as stopped after delay
-  const markScrollingStopped = useCallback(() => {
-    clearScrollTimer();
-    scrollTimerRef.current = setTimeout(() => {
-      setIsScrolling(false);
-      scrollTimerRef.current = null;
-    }, SCROLL_END_DELAY_MS);
-  }, [clearScrollTimer]);
-
-  // Handle scroll events
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      setIsScrolling(true);
-      markScrollingStopped();
-    };
-
-    container.addEventListener("scroll", handleScroll, { passive: true });
-
-    // Use scrollend event if supported for better performance
-    if ("onscrollend" in container) {
-      container.addEventListener("scrollend", markScrollingStopped, {
-        passive: true,
-      });
-    }
-
-    return () => {
-      container.removeEventListener("scroll", handleScroll);
-      if ("onscrollend" in container) {
-        container.removeEventListener("scrollend", markScrollingStopped);
-      }
-      clearScrollTimer();
-    };
-  }, [markScrollingStopped, clearScrollTimer]);
-
-  // ------------------------ END ------------------------
 
   // Track scroll progress within the container
   const { scrollYProgress } = useScroll({
@@ -105,49 +50,248 @@ export default function App() {
 
       <main
         ref={containerRef}
-        className="scroll-container"
+        className="scroll-container-smooth"
         style={{ position: "relative" }}
       >
-        {pagesConfig.map((page, index) => (
-          <motion.section key={page.id} className="section">
-            <div className="container mx-auto px-6 relative z-10">
-              <TemplateRenderer
-                config={page}
-                data={userData}
-                isActive={index === currentPage && !isScrolling}
-              />
-            </div>
-          </motion.section>
-        ))}
+        {/* Road 1 - Draws on pages 1-2, then scrolls away */}
+        <div style={{ 
+          position: "absolute", 
+          top: "150vh", 
+          left: 0, 
+          width: "100%", 
+          height: "300vh", 
+          zIndex: 5, 
+          pointerEvents: "none" 
+        }}>
+          <motion.svg
+            style={{ width: "100%", height: "100%", position: "sticky", top: 0 }}
+            viewBox="-800 -400 3200 2000"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <motion.path
+              style={{ 
+                pathLength: 1  // Set to 1 for testing - shows full road
+              }}
+              d="M -800 600 Q 400 400 1200 700 Q 2000 1000 2400 600"
+              strokeWidth={40}
+              stroke="#2a2a2a"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <motion.path
+              style={{ 
+                pathLength: 1
+              }}
+              d="M -800 600 Q 400 400 1200 700 Q 2000 1000 2400 600"
+              strokeWidth={35}
+              stroke="#5a5a5a"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <motion.path
+              style={{ 
+                pathLength: 1
+              }}
+              d="M -800 600 Q 400 400 1200 700 Q 2000 1000 2400 600"
+              strokeWidth={3.5}
+              stroke="#FFD700"
+              strokeLinecap="round"
+              strokeDasharray="30 30"
+              fill="none"
+            />
+          </motion.svg>
+        </div>
+
+        {/* Road 2 - Draws on pages 4-5, then scrolls away */}
+        <div style={{ 
+          position: "absolute", 
+          top: "600vh", 
+          left: 0, 
+          width: "100%", 
+          height: "300vh", 
+          zIndex: 5, 
+          pointerEvents: "none" 
+        }}>
+          <motion.svg
+            style={{ width: "100%", height: "100%", position: "sticky", top: 0 }}
+            viewBox="-800 -400 3200 2000"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <motion.path
+              style={{ 
+                pathLength: 1
+              }}
+              d="M 2000 500 Q 1200 700 600 600 Q 0 500 -400 800 Q -800 1100 400 1200"
+              strokeWidth={40}
+              stroke="#2a2a2a"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <motion.path
+              style={{ 
+                pathLength: 1
+              }}
+              d="M 2000 500 Q 1200 700 600 600 Q 0 500 -400 800 Q -800 1100 400 1200"
+              strokeWidth={35}
+              stroke="#5a5a5a"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <motion.path
+              style={{ 
+                pathLength: 1
+              }}
+              d="M 2000 500 Q 1200 700 600 600 Q 0 500 -400 800 Q -800 1100 400 1200"
+              strokeWidth={3.5}
+              stroke="#FFD700"
+              strokeLinecap="round"
+              strokeDasharray="30 30"
+              fill="none"
+            />
+          </motion.svg>
+        </div>
+
+        {/* Road 3 - Draws on pages 7-8 */}
+        <div style={{ 
+          position: "absolute", 
+          top: "1050vh", 
+          left: 0, 
+          width: "100%", 
+          height: "300vh", 
+          zIndex: 5, 
+          pointerEvents: "none" 
+        }}>
+          <motion.svg
+            style={{ width: "100%", height: "100%", position: "sticky", top: 0 }}
+            viewBox="-800 -400 3200 2000"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <motion.path
+              style={{ 
+                pathLength: 1
+              }}
+              d="M -600 400 Q 400 300 1000 500 Q 1600 700 1400 1000 Q 1200 1300 600 1100"
+              strokeWidth={40}
+              stroke="#2a2a2a"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <motion.path
+              style={{ 
+                pathLength: 1
+              }}
+              d="M -600 400 Q 400 300 1000 500 Q 1600 700 1400 1000 Q 1200 1300 600 1100"
+              strokeWidth={35}
+              stroke="#5a5a5a"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <motion.path
+              style={{ 
+                pathLength: 1
+              }}
+              d="M -600 400 Q 400 300 1000 500 Q 1600 700 1400 1000 Q 1200 1300 600 1100"
+              strokeWidth={3.5}
+              stroke="#FFD700"
+              strokeLinecap="round"
+              strokeDasharray="30 30"
+              fill="none"
+            />
+          </motion.svg>
+        </div>
+
+        {pagesConfig.map((page, index) => {
+          // Calculate scroll-based animation ranges for this section
+          const sectionStart = index / TOTAL_PAGES;
+          const sectionMid = (index + 0.5) / TOTAL_PAGES;
+          const sectionEnd = (index + 1) / TOTAL_PAGES;
+          
+          // Opacity: fade in as approaching, fade out as leaving
+          // Special case: first page starts fully visible
+          const opacity = useTransform(
+            scrollYProgress,
+            index === 0
+              ? [0, 0.1, sectionEnd - 0.05, Math.min(1, sectionEnd + 0.15)]
+              : [
+                  Math.max(0, sectionStart - 0.15),
+                  sectionStart + 0.05,
+                  sectionEnd - 0.05,
+                  Math.min(1, sectionEnd + 0.15)
+                ],
+            index === 0
+              ? [1, 1, 1, 0]
+              : [0, 1, 1, 0]
+          );
+
+          // Y position: smooth parallax effect
+          // First page stays fixed at center, others get parallax
+          const y = index === 0 
+            ? 0  // No movement for first page
+            : useTransform(
+                scrollYProgress,
+                [sectionStart - 0.1, sectionMid, sectionEnd + 0.1],
+                [100, 0, -100]
+              );
+
+          // Scale: subtle zoom effect
+          // First page stays at full scale - no shrinking
+          const scale = index === 0
+            ? 1  // Always full scale for first page
+            : useTransform(
+                scrollYProgress,
+                [sectionStart, sectionMid, sectionEnd],
+                [0.95, 1, 0.95]
+              );
+
+          return (
+            <motion.section
+              key={page.id}
+              className="section-tall"
+              style={{
+                opacity,
+                y,
+                scale,
+              }}
+            >
+              <div className="container mx-auto px-6 relative z-10">
+                <TemplateRenderer
+                  config={page}
+                  data={userData}
+                  isActive={true}
+                />
+              </div>
+            </motion.section>
+          );
+        })}
       </main>
 
       {/* Layer separating foreground animations and background models */}
-      <div className="separator-layer" />
+      <motion.div 
+        className="separator-layer"
+        style={{
+          opacity: useTransform(
+            scrollYProgress,
+            [0, 0.15],
+            [0, 1]
+          ),
+        }}
+      />
 
       {/* Background Models - 3D models floating in the background */}
       <div
         className={`background-models-wrapper ${
           showBackground ? "visible" : ""
         }`}
+        style={{
+          opacity: useTransform(
+            scrollYProgress,
+            [0, 0.15, 0.3],
+            [0, 0, 1]
+          ),
+        }}
       >
-        <BackgroundModels speed={currentPage} />
+        <BackgroundModels speed={currentPage * 0.3} />
       </div>
-
-      {/* Scroll Squiggle - Animated line indicating scroll progress */}
-      <Scroll scrollYProgress={scrollYProgress} />
-
-
-      {/* Uncomment this to add a speed control input */}
-      {/* <input
-        key="speed-control"
-        className="speed-control"
-        type="range"
-        min="0"
-        max="25"
-        value={speed}
-        step="0.1"
-        onChange={(e) => setSpeed(e.target.value)}
-      /> */}
     </>
   );
 }
